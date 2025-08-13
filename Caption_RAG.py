@@ -70,7 +70,7 @@ cc = check_today_prompt(schedule)
 
 ### RAG process
 # Hugging Face API Token
-API_TOKEN = os.environ.get("HUGGINGFACE_API_TOKEN")
+API_TOKEN = os.environ.get("HuggingFace_API_Token")
 if not API_TOKEN:
     raise ValueError("HUGGINGFACE_API_TOKEN is not set in environment variables.")
 # URL of the Hugging Face model API
