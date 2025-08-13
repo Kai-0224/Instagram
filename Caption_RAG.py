@@ -5,7 +5,7 @@ import requests
 import json
 import faiss
 import numpy as np
-from huggingface_hub import HfApi
+from huggingface_hub import InferenceClient
 from google import genai
 
 ### Set the post topic
@@ -72,13 +72,11 @@ cc = check_today_prompt(schedule)
 # Hugging Face API Token
 API_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
 # URL of the Hugging Face model API
-EMBEDDING_MODEL_URL = "https://api-inference.huggingface.co/models/mixedbread-ai/mxbai-embed-large-v1"
-
-if not API_TOKEN:
-    raise ValueError("HUGGINGFACE_API_TOKEN environment variable is not set")
+EMBEDDING_MODEL_URL  = "https://router.huggingface.co/hf-inference/models/mixedbread-ai/mxbai-embed-large-v1/pipeline/feature-extraction"
 headers = {
-    "Authorization": f"Bearer {API_TOKEN}"
+    "Authorization": f"Bearer {API_TOKEN}",
 }
+
 
 # Document database (can be replaced with your own documents)
 documents = [
