@@ -9,6 +9,8 @@ on:
 jobs:
   generate-content:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 授予寫入權限
     
     steps:
     - uses: actions/checkout@v4
