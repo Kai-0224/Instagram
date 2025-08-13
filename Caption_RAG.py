@@ -170,20 +170,14 @@ output_file = f"generated_instagram_caption_{today}.txt"
 # Generate and save content
 prompt = f"Context: {context}\n\nQuestion: {cc}\n\nAnswer:"
 
-try:
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-    
-    # Extract the generated text
-    generated_content = response.text
-    
-    # Save to file
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write(generated_content)
-        
-    #print(f"Generated content saved to {tran_file}")
-    
-except Exception as e:
-    #print(f"Error generating content: {e}")
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=prompt
+)
+
+# Extract the generated text
+generated_content = response.text
+
+# Save to file
+with open(output_file, "w", encoding="utf-8") as file:
+    file.write(generated_content)
