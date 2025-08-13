@@ -31,7 +31,7 @@ jobs:
         
     - name: Set environment variables
       env:
-        HUGGINGFACE_API_TOKEN: ${{ secrets.HUGGINGFACE_API_TOKEN }}
+        HuggingFace_API_Token: ${{ secrets.HuggingFace_API_Token }}
         Genai_API: ${{ secrets.GENAI_API }}
       run: |
         echo "HUGGINGFACE_API_TOKEN=$HUGGINGFACE_API_TOKEN" >> $GITHUB_ENV
