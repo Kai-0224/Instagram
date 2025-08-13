@@ -70,9 +70,11 @@ cc = check_today_prompt(schedule)
 
 ### RAG process
 # Hugging Face API Token
-API_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
+API_TOKEN = os.environ.get("HUGGINGFACE_API_TOKEN")
+if not API_TOKEN:
+    raise ValueError("HUGGINGFACE_API_TOKEN is not set in environment variables.")
 # URL of the Hugging Face model API
-EMBEDDING_MODEL_URL  = "https://router.huggingface.co/hf-inference/models/mixedbread-ai/mxbai-embed-large-v1/pipeline/feature-extraction"
+EMBEDDING_MODEL_URL = "https://router.huggingface.co/hf-inference/models/mixedbread-ai/mxbai-embed-large-v1/pipeline/feature-extraction"
 headers = {
     "Authorization": f"Bearer {API_TOKEN}",
 }
@@ -90,20 +92,19 @@ documents = [
 # Embedding generation function, calling Hugging Face API to generate embedding
        
 def embed_texts(texts):
-    embeddings = []
-    for text in texts:
-        payload = {
-            "inputs": text,
-            "options": {
-                "wait_for_model": True
-            }
+    payload = {
+        "inputs": texts,
+        "options": {
+            "wait_for_model": True
         }
-        response = requests.post(EMBEDDING_MODEL_URL, headers=headers, json=payload)
-        if response.status_code == 200:
-            embeddings.append(response.json())
-        else:
-            raise Exception(f"Error: {response.status_code}, {response.text}")
-    return np.array(embeddings)
+    }
+    
+    response = requests.post(EMBEDDING_MODEL_URL, headers=headers, json=payload)
+
+    if response.status_code == 200:
+        return np.array(response.json())
+    else:
+        raise Exception(f"Error: {response.status_code}, {response.text}")
 
 '''
 def embed_texts_with_retry(texts, max_retries=3):
@@ -162,7 +163,7 @@ context = " ".join(search_results)
 
 ### Generate copywriting
 # Initialize the Google GenAI client
-client = genai.Client(api_key=os.getenv("Genai_API"))
+client = genai.Client(api_key=os.environ.get("Genai_API"))
 today = datetime.date.today()
 
 # Define the file name to be saved

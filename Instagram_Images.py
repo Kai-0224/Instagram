@@ -9,7 +9,7 @@ from io import BytesIO
 import base64
 
 # Initialize the Google GenAI client
-client = genai.Client(api_key=os.getenv("Genai_API"))
+client = genai.Client(api_key=os.environ.get("Genai_API"))
 today = datetime.date.today()
 
 # Define file paths
@@ -32,67 +32,6 @@ with open(output_file, "w", encoding="utf-8") as file:
     file.write(translated.text)
 
 ### Analyze copywriting and generate design requirements
-'''
-def analyze_post_content_improved(post_content):
-    """改進的內容分析函數"""
-    sections = {
-        "Theme and Purpose": "分析貼文的主題和目的",
-        "Composition and Scene Design": "分析構圖和場景設計要求", 
-        "Color and Style": "分析色彩和風格偏好",
-        "Details and Texture": "分析細節和紋理要求",
-        "Atmosphere and Lighting": "分析氛圍和光線效果",
-        "Call to Action": "分析呼籲行動的視覺元素",
-        "Emotion and Storytelling": "分析情感和故事敘述"
-    }
-    
-    analysis_result = {}
-    successful_analyses = 0
-
-    for section_key, section_desc in sections.items():
-        input_text = f"""
-        分析以下 Instagram 貼文內容，針對「{section_desc}」提供簡潔的洞察和建議。
-        
-        貼文內容: {post_content}
-        
-        請提供：
-        1. 關鍵要素分析
-        2. 視覺設計建議
-        3. 具體實作要點
-        """
-        
-        try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=input_text
-            )
-            
-            analysis_result[section_key] = {
-                "description": section_desc,
-                "analysis": response.text,
-                "status": "success"
-            }
-            successful_analyses += 1
-            #print(f"✅ 完成分析: {section_key}")
-            
-        except Exception as e:
-            #print(f"❌ 分析錯誤 {section_key}: {e}")
-            analysis_result[section_key] = {
-                "description": section_desc,
-                "analysis": f"分析失敗: {e}",
-                "status": "error"
-            }
-    
-    # 添加分析摘要
-    analysis_result["_summary"] = {
-        "total_sections": len(sections),
-        "successful_analyses": successful_analyses,
-        "success_rate": f"{(successful_analyses/len(sections)*100):.1f}%",
-        "timestamp": datetime.datetime.now().isoformat()
-    }
-    
-    return analysis_result
-'''
-    
 def analyze_post_content(post_content):
     # Define sections to ask questions
     sections = [
