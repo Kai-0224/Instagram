@@ -26,14 +26,10 @@ except FileNotFoundError:
 
 # Translation
 translator = Translator()
-try:
-    translated = translator.translate(en_content, src='en', dest='zh-TW')
-    
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write(translated.text)
-    #print(f"Translation saved to {output_file}")
-except Exception as e:
-    #print(f"Translation error: {e}")
+translated = translator.translate(en_content, src='en', dest='zh-TW')
+
+with open(output_file, "w", encoding="utf-8") as file:
+    file.write(translated.text)
 
 ### Analyze copywriting and generate design requirements
 '''
@@ -133,12 +129,8 @@ def analyze_post_content(post_content):
 
 # Function: Save the analysis results as a JSON file
 def save_analysis_to_json(analysis, filename):
-    try:
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(analysis, f, ensure_ascii=False, indent=4)
-        #print(f"Analysis saved to {filename}")
-    except Exception as e:
-        #print(f"Error saving analysis: {e}")
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(analysis, f, ensure_ascii=False, indent=4)
 
 # Analyze the post content and generate responses for each section one by one
 if en_content:
@@ -214,12 +206,6 @@ def generate_image_with_analysis(analysis_result, en_content):
 image_bytes = generate_image_with_analysis(analysis, en_content)
 
 if image_bytes:
-    try:
-        image = Image.open(BytesIO(image_bytes))
-        image_filename = f'gemini-native-product-image_{today}.png'
-        image.save(image_filename)
-        #print(f"Image saved as {image_filename}")
-    except Exception as e:
-        #print(f"Error saving image: {e}")
-else:
-    #print("Failed to generate image")
+    image = Image.open(BytesIO(image_bytes))
+    image_filename = f'gemini-native-product-image_{today}.png'
+    image.save(image_filename)

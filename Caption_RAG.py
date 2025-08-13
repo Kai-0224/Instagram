@@ -88,6 +88,24 @@ documents = [
 ]
 
 # Embedding generation function, calling Hugging Face API to generate embedding
+       
+def embed_texts(texts):
+    embeddings = []
+    for text in texts:
+        payload = {
+            "inputs": text,
+            "options": {
+                "wait_for_model": True
+            }
+        }
+        response = requests.post(EMBEDDING_MODEL_URL, headers=headers, json=payload)
+        if response.status_code == 200:
+            embeddings.append(response.json())
+        else:
+            raise Exception(f"Error: {response.status_code}, {response.text}")
+    return np.array(embeddings)
+
+'''
 def embed_texts_with_retry(texts, max_retries=3):
     embeddings = []
     
@@ -115,23 +133,6 @@ def embed_texts_with_retry(texts, max_retries=3):
                     raise e
                 time.sleep(1)
     
-    return np.array(embeddings)
-
-'''        
-def embed_texts(texts):
-    embeddings = []
-    for text in texts:
-        payload = {
-            "inputs": text,
-            "options": {
-                "wait_for_model": True
-            }
-        }
-        response = requests.post(EMBEDDING_MODEL_URL, headers=headers, json=payload)
-        if response.status_code == 200:
-            embeddings.append(response.json())
-        else:
-            raise Exception(f"Error: {response.status_code}, {response.text}")
     return np.array(embeddings)
 '''
 
