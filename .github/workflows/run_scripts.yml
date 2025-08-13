@@ -45,6 +45,11 @@ jobs:
     - name: Generate Images
       run: python Instagram_Images.py
       
+    - name: Check for generated files before moving  # <-- 新增的偵錯步驟
+      run: |
+        echo "Listing all files in the current directory:"
+        ls -la
+        
     - name: Create output directory and organize files
       run: |
         # 建立日期資料夾
