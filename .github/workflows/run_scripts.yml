@@ -1,0 +1,76 @@
+# .github/workflows/run_scripts.yml
+name: Run Instagram Content Generation
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 每天上午9點執行
+  workflow_dispatch:      # 手動觸發
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Set environment variables
+      env:
+        HUGGINGFACE_API_TOKEN: ${{ secrets.HUGGINGFACE_API_TOKEN }}
+        Genai_API: ${{ secrets.GENAI_API }}
+      run: |
+        echo "HUGGINGFACE_API_TOKEN=$HUGGINGFACE_API_TOKEN" >> $GITHUB_ENV
+        echo "Genai_API=$Genai_API" >> $GITHUB_ENV
+        
+    - name: Generate Caption
+      run: python Caption_RAG.py
+      
+    - name: Generate Images
+      run: python Instagram_Images.py
+      
+    - name: Create output directory and organize files
+      run: |
+        # 建立日期資料夾
+        DATE=$(date +%Y-%m-%d)
+        OUTPUT_DIR="generated_content/$DATE"
+        mkdir -p "$OUTPUT_DIR"
+        
+        # 移動生成的檔案到指定資料夾
+        mv generated_instagram_caption_*.txt "$OUTPUT_DIR/" 2>/dev/null || true
+        mv translated_caption_*.txt "$OUTPUT_DIR/" 2>/dev/null || true
+        mv post_analysis_result_*.json "$OUTPUT_DIR/" 2>/dev/null || true
+        mv gemini-native-product-image_*.png "$OUTPUT_DIR/" 2>/dev/null || true
+        
+        # 建立檔案清單
+        echo "Generated files in $OUTPUT_DIR:" > "$OUTPUT_DIR/file_list.txt"
+        ls -la "$OUTPUT_DIR/" >> "$OUTPUT_DIR/file_list.txt"
+      
+    - name: Upload generated files
+      uses: actions/upload-artifact@v3
+      with:
+        name: instagram-content-${{ github.run_number }}
+        path: generated_content/
+        
+    - name: Commit and push generated files (optional)
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      run: |
+        git config --local user.email "fc303zaq@gmail.com"
+        git config --local user.name "Kai-0224"
+        git add generated_content/
+        git commit -m "Auto-generated Instagram content for $(date +%Y-%m-%d)" || exit 0
+        git push
