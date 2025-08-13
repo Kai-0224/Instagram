@@ -1,0 +1,9 @@
+faiss-cpu
+sentence-transformers
+langchain
+googletrans==4.0.0-rc1
+huggingface_hub
+requests
+numpy
+Pillow
+google-genai
