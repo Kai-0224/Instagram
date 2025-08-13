@@ -3,7 +3,7 @@ name: Run Instagram Content Generation
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # 每天上午9點執行
+    - cron: '1 0 * * *'  # 每天上午10點執行
   workflow_dispatch:      # 手動觸發
 
 jobs:
