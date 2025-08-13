@@ -21,7 +21,7 @@ try:
     with open(input_file, 'r', encoding='utf-8') as f:
         en_content = f.read()
 except FileNotFoundError:
-    #print(f"File {tran_file} not found. Please run Caption_RAG.py first.")
+    print(f"Error: File {input_file} not found. Please run Caption_RAG.py first.")
     exit(1)
 
 # Translation
@@ -33,7 +33,6 @@ with open(output_file, "w", encoding="utf-8") as file:
 
 ### Analyze copywriting and generate design requirements
 def analyze_post_content(post_content):
-    # Define sections to ask questions
     sections = [
         "Theme and Purpose",
         "Composition and Scene Design", 
@@ -44,9 +43,7 @@ def analyze_post_content(post_content):
         "Emotion and Storytelling"
     ]
     
-    analysis_result = {}  # Store the response results of each section
-
-    # Use a for loop to ask questions for each section one by one
+    analysis_result = {}
     for section in sections:
         input_text = f"Analyze the following post content and provide a brief and concise insight on {section}. Post content: {post_content}."
         
@@ -55,27 +52,20 @@ def analyze_post_content(post_content):
                 model="gemini-2.5-flash",
                 contents=input_text
             )
-            
-            # Store the results of each section
             analysis_result[section] = response.text
-            #print(f"Analyzed: {section}")
+            print(f"Analyzed: {section}")  # <-- 恢復日誌輸出
             
         except Exception as e:
-            #print(f"Error analyzing {section}: {e}")
+            print(f"Error analyzing {section}: {e}") # <-- 恢復日誌輸出
             analysis_result[section] = f"Error: {e}"
-
     return analysis_result
 
-# Function: Save the analysis results as a JSON file
 def save_analysis_to_json(analysis, filename):
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(analysis, f, ensure_ascii=False, indent=4)
 
-# Analyze the post content and generate responses for each section one by one
 if en_content:
     analysis = analyze_post_content(en_content)
-    
-    # Save analysis results as JSON files
     save_analysis_to_json(analysis, f"post_analysis_result_{today}.json")
 
 ### Generate images
@@ -93,17 +83,16 @@ def generate_image(prompt):
             if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
                 image_data = base64.b64decode(part.inline_data.data)
                 return image_data
+        print("Error: Gemini API response did not contain an image part.") # <-- 新增日誌
         return None
     except Exception as e:
-        #print(f"Error generating image: {e}")
+        print(f"Error generating image: {e}") # <-- 恢復日誌輸出
         return None
 
 def generate_image_with_analysis(analysis_result, en_content):
-    # Extract the key point of analysis
     key_insights = []
     
     for section, data in analysis_result.items():
-
         if not section.startswith('_') and not str(data).startswith('Error:'):
             summary = str(data)[:100] + "..." if len(str(data)) > 100 else str(data)
             key_insights.append(f"{section}: {summary}")
@@ -122,7 +111,6 @@ def generate_image_with_analysis(analysis_result, en_content):
         - 1080x1080 square format
         """
     else:
-        # Use the analysis result to build prompt
         image_prompt = f"""
         Create a professional Instagram product promotion image based on the following analysis:
 
@@ -142,9 +130,13 @@ def generate_image_with_analysis(analysis_result, en_content):
     return generate_image(image_prompt)
 
 # Generate image
+print("Attempting to generate image...")
 image_bytes = generate_image_with_analysis(analysis, en_content)
 
 if image_bytes:
     image = Image.open(BytesIO(image_bytes))
     image_filename = f'gemini-native-product-image_{today}.png'
     image.save(image_filename)
+    print(f"Successfully generated and saved image: {image_filename}")
+else:
+    print("Image generation failed. No image file was saved.")
