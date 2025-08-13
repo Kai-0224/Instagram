@@ -74,6 +74,8 @@ API_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
 # URL of the Hugging Face model API
 EMBEDDING_MODEL_URL = "https://api-inference.huggingface.co/models/mixedbread-ai/mxbai-embed-large-v1"
 
+if not API_TOKEN:
+    raise ValueError("HUGGINGFACE_API_TOKEN environment variable is not set")
 headers = {
     "Authorization": f"Bearer {API_TOKEN}"
 }
