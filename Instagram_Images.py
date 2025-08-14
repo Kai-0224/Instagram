@@ -1,7 +1,7 @@
 import json
 import os
 import datetime
-from googletrans import Translator
+#from googletrans import Translator
 from google import genai
 from google.genai import types
 from PIL import Image
@@ -14,7 +14,7 @@ today = datetime.date.today()
 
 # Define file paths
 input_file = f"generated_instagram_caption_{today}.txt"
-output_file = f"translated_caption_{today}.txt"
+#output_file = f"translated_caption_{today}.txt"
 
 # Read the .txt file
 try:
@@ -23,13 +23,14 @@ try:
 except FileNotFoundError:
     print(f"Error: File {input_file} not found. Please run Caption_RAG.py first.")
     exit(1)
-
+'''
 # Translation
 translator = Translator()
 translated = translator.translate(en_content, src='en', dest='zh-TW')
 
 with open(output_file, "w", encoding="utf-8") as file:
     file.write(translated.text)
+'''
 
 ### Analyze copywriting and generate design requirements
 def analyze_post_content(post_content):
