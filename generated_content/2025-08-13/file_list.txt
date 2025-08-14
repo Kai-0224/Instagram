@@ -1,8 +1,0 @@
-Generated files in generated_content/2025-08-13:
-total 24
-drwxr-xr-x 2 runner docker 4096 Aug 13 16:43 .
-drwxr-xr-x 3 runner docker 4096 Aug 13 16:43 ..
--rw-r--r-- 1 runner docker   49 Aug 13 16:43 file_list.txt
--rw-r--r-- 1 runner docker 1297 Aug 13 16:42 generated_instagram_caption_2025-08-13.txt
--rw-r--r-- 1 runner docker 2528 Aug 13 16:43 post_analysis_result_2025-08-13.json
--rw-r--r-- 1 runner docker 1243 Aug 13 16:42 translated_caption_2025-08-13.txt
