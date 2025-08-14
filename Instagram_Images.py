@@ -72,21 +72,35 @@ if en_content:
 def generate_image(prompt):
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash-preview-image-generation",
+            model="gemini-2.0-flash-preview-image-generation", 
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_modalities=['TEXT', 'IMAGE']
             )
         )
         
+        if not response.candidates:
+            print("Error: Gemini API response did not contain any candidates.")
+            return None
+
         for part in response.candidates[0].content.parts:
-            if hasattr(part, 'inline_data') and part.inline_data.mime_type.startswith('image/'):
+            if hasattr(part, 'inline_data') and part.inline_data is not None and part.inline_data.mime_type.startswith('image/'):
+                print("Found image part in the response.")
                 image_data = base64.b64decode(part.inline_data.data)
                 return image_data
-        print("Error: Gemini API response did not contain an image part.") # <-- 新增日誌
+            else:
+                if hasattr(part, 'text'):
+                     print(f"Found a text part in the response: {part.text[:100]}...")
+                else:
+                     print("Found a non-image, non-text part in the response.")
+
+
+        print("Error: Loop completed, but no image part was found in the Gemini API response.")
         return None
     except Exception as e:
-        print(f"Error generating image: {e}") # <-- 恢復日誌輸出
+        print(f"An exception occurred while generating image: {e}")
+        if 'response' in locals():
+            print("Full API Response:", response)
         return None
 
 def generate_image_with_analysis(analysis_result, en_content):
