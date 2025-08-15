@@ -1,7 +1,7 @@
 import json
 import os
 import datetime
-from googletrans import Translator
+#from googletrans import Translator
 from google import genai
 from google.genai import types
 from PIL import Image
@@ -23,10 +23,11 @@ try:
 except FileNotFoundError:
     print(f"Error: File {input_file} not found. Please run Caption_RAG.py first.")
     exit(1)
-
+'''
 # Translation
 translator = Translator()
 translated = translator.translate(en_content, src='en', dest='zh-TW')
+'''
 
 with open(output_file, "w", encoding="utf-8") as file:
     file.write(translated.text)
@@ -68,7 +69,7 @@ if en_content:
     analysis = analyze_post_content(en_content)
     save_analysis_to_json(analysis, f"post_analysis_result_{today}.json")
 
-### Generate images using the new method
+### Generate images
 def generate_images_with_analysis(analysis_result, en_content):
     key_insights = []
     
@@ -126,8 +127,7 @@ generated_images = generate_images_with_analysis(analysis, en_content)
 
 if generated_images:
     for i, generated_image in enumerate(generated_images):
-        image_filename = f'imagen-product-image_{today}_{i}.png'
-        # The generated_image object has a `.image` attribute which is a PIL Image object
+        image_filename = f'imagen-product-image_{today}_{i}.jpg'
         generated_image.image.save(image_filename)
         print(f"Successfully generated and saved image: {image_filename}")
 else:
