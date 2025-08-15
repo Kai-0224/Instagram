@@ -145,13 +145,23 @@ def generate_image_with_analysis(analysis_result, en_content):
     return generate_image(image_prompt)
 
 # Generate image
-print("Attempting to generate image...")
 image_bytes = generate_image_with_analysis(analysis, en_content)
-
 if image_bytes:
-    image = Image.open(BytesIO(image_bytes))
     image_filename = f'gemini-native-product-image_{today}.png'
-    image.save(image_filename)
-    print(f"Successfully generated and saved image: {image_filename}")
+    
+    try:
+        with open(image_filename, 'wb') as f:
+            f.write(image_bytes)
+        try:
+                image = Image.open(image_filename)
+                image.verify() # 驗證檔案是否完整
+                print("PIL successfully verified the image file.")
+        except Exception as e:
+            print(f"Warning: PIL failed to verify the saved image file: {e}")
+            print("The file has been saved, but it might be corrupted.")
+
+    except Exception as e:
+        print(f"Failed to write image file: {e}")
+        print("Image generation failed. No image file was saved.")
 else:
-    print("Image generation failed. No image file was saved.")
+    print("Image generation failed. No image part was found in the response.") 
