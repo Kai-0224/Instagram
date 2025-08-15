@@ -1,7 +1,7 @@
 import json
 import os
 import datetime
-#from googletrans import Translator
+from googletrans import Translator
 from google import genai
 from google.genai import types
 from PIL import Image
@@ -14,7 +14,7 @@ today = datetime.date.today()
 
 # Define file paths
 input_file = f"generated_instagram_caption_{today}.txt"
-#output_file = f"translated_caption_{today}.txt"
+output_file = f"translated_caption_{today}.txt"
 
 # Read the .txt file
 try:
@@ -23,14 +23,13 @@ try:
 except FileNotFoundError:
     print(f"Error: File {input_file} not found. Please run Caption_RAG.py first.")
     exit(1)
-'''
+
 # Translation
 translator = Translator()
 translated = translator.translate(en_content, src='en', dest='zh-TW')
 
 with open(output_file, "w", encoding="utf-8") as file:
     file.write(translated.text)
-'''
 
 ### Analyze copywriting and generate design requirements
 def analyze_post_content(post_content):
@@ -54,10 +53,10 @@ def analyze_post_content(post_content):
                 contents=input_text
             )
             analysis_result[section] = response.text
-            print(f"Analyzed: {section}")  # <-- 恢復日誌輸出
+            print(f"Analyzed: {section}")
             
         except Exception as e:
-            print(f"Error analyzing {section}: {e}") # <-- 恢復日誌輸出
+            print(f"Error analyzing {section}: {e}")
             analysis_result[section] = f"Error: {e}"
     return analysis_result
 
@@ -69,42 +68,8 @@ if en_content:
     analysis = analyze_post_content(en_content)
     save_analysis_to_json(analysis, f"post_analysis_result_{today}.json")
 
-### Generate images
-def generate_image(prompt):
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.0-flash-preview-image-generation", 
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=['TEXT', 'IMAGE']
-            )
-        )
-        
-        if not response.candidates:
-            print("Error: Gemini API response did not contain any candidates.")
-            return None
-
-        for part in response.candidates[0].content.parts:
-            if hasattr(part, 'inline_data') and part.inline_data is not None and part.inline_data.mime_type.startswith('image/'):
-                print("Found image part in the response.")
-                image_data = base64.b64decode(part.inline_data.data)
-                return image_data
-            else:
-                if hasattr(part, 'text'):
-                     print(f"Found a text part in the response: {part.text[:100]}...")
-                else:
-                     print("Found a non-image, non-text part in the response.")
-
-
-        print("Error: Loop completed, but no image part was found in the Gemini API response.")
-        return None
-    except Exception as e:
-        print(f"An exception occurred while generating image: {e}")
-        if 'response' in locals():
-            print("Full API Response:", response)
-        return None
-
-def generate_image_with_analysis(analysis_result, en_content):
+### Generate images using the new method
+def generate_images_with_analysis(analysis_result, en_content):
     key_insights = []
     
     for section, data in analysis_result.items():
@@ -113,7 +78,7 @@ def generate_image_with_analysis(analysis_result, en_content):
             key_insights.append(f"{section}: {summary}")
     
     if not key_insights:
-        image_prompt = f"""
+        prompt = f"""
         Create a professional Instagram product promotion image for Tanji Company.
         
         Content: {en_content[:300]}
@@ -126,7 +91,7 @@ def generate_image_with_analysis(analysis_result, en_content):
         - 1080x1080 square format
         """
     else:
-        image_prompt = f"""
+        prompt = f"""
         Create a professional Instagram product promotion image based on the following analysis:
 
         Content summary: {en_content[:200]}...
@@ -142,26 +107,28 @@ def generate_image_with_analysis(analysis_result, en_content):
         - 1080x1080 square format
         """
     
-    return generate_image(image_prompt)
-
-# Generate image
-image_bytes = generate_image_with_analysis(analysis, en_content)
-if image_bytes:
-    image_filename = f'gemini-native-product-image_{today}.png'
-    
     try:
-        with open(image_filename, 'wb') as f:
-            f.write(image_bytes)
-        try:
-                image = Image.open(image_filename)
-                image.verify() # 驗證檔案是否完整
-                print("PIL successfully verified the image file.")
-        except Exception as e:
-            print(f"Warning: PIL failed to verify the saved image file: {e}")
-            print("The file has been saved, but it might be corrupted.")
-
+        response = client.models.generate_images(
+            model='imagen-4.0-generate-preview-06-06',
+            prompt=prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images= 4,
+            ))
+        
+        return response.generated_images
     except Exception as e:
-        print(f"Failed to write image file: {e}")
-        print("Image generation failed. No image file was saved.")
+        print(f"Error generating images: {e}")
+        return []
+
+# Generate images
+print("Attempting to generate images...")
+generated_images = generate_images_with_analysis(analysis, en_content)
+
+if generated_images:
+    for i, generated_image in enumerate(generated_images):
+        image_filename = f'imagen-product-image_{today}_{i}.png'
+        # The generated_image object has a `.image` attribute which is a PIL Image object
+        generated_image.image.save(image_filename)
+        print(f"Successfully generated and saved image: {image_filename}")
 else:
-    print("Image generation failed. No image part was found in the response.") 
+    print("Image generation failed. No image files were saved.")
