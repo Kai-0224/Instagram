@@ -108,14 +108,14 @@ def generate_images_with_analysis(analysis_result, en_content):
         """
     
     try:
-        response = client.models.generate_images(
-            model='imagen-4.0-generate-preview-06-06',
-            prompt=prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images= 4,
-            ))
+        response = client.models.generate_content(
+            model="gemini-2.0-flash-preview-image-generation",
+            contents=contents,
+            config=types.GenerateContentConfig(
+            response_modalities=['TEXT', 'IMAGE']
+                )
         
-        return response.generated_images
+        return response.candidates[0].content.parts
     except Exception as e:
         print(f"Error generating images: {e}")
         return []
@@ -126,8 +126,12 @@ generated_images = generate_images_with_analysis(analysis, en_content)
 
 if generated_images:
     for i, generated_image in enumerate(generated_images):
-        image_filename = f'imagen-product-image_{today}_{i}.jpg'
-        generated_image.image.save(image_filename)
+        if generated_image.text is not None:
+            print(part.text)
+        elif generated_image.inline_data is not None:
+            image_filename = f'imagen-product-image_{today}_{i}.jpg'
+            image = Image.open(BytesIO((part.inline_data.data)))
+            image.save('image_filename')
         print(f"Successfully generated and saved image: {image_filename}")
 else:
     print("Image generation failed. No image files were saved.")
