@@ -124,10 +124,10 @@ def generate_images_with_analysis(analysis_result, en_content):
 # Generate images
 print("Attempting to generate images...")
 generated_images = generate_images_with_analysis(analysis, en_content)
-image_filename = f'imagen-product-image_{today}_{i}.jpg'
 
 if generated_images:
     for i, generated_image in enumerate(generated_images):
+        image_filename = f'imagen-product-image_{today}_{i}.jpg'
         if generated_image.text is not None:
             print(generated_image.text)
         elif generated_image.inline_data is not None:
