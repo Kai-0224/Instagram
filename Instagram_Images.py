@@ -110,7 +110,7 @@ def generate_images_with_analysis(analysis_result, en_content):
     try:
         response = client.models.generate_content(
             model="gemini-2.0-flash-preview-image-generation",
-            contents=contents,
+            contents=prompt,
             config=types.GenerateContentConfig(
             response_modalities=['TEXT', 'IMAGE']
                 )
