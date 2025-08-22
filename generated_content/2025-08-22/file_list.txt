@@ -1,0 +1,9 @@
+Generated files in generated_content/2025-08-22:
+total 1084
+drwxr-xr-x 2 runner docker    4096 Aug 22 09:01 .
+drwxr-xr-x 3 runner docker    4096 Aug 22 09:01 ..
+-rw-r--r-- 1 runner docker      49 Aug 22 09:01 file_list.txt
+-rw-r--r-- 1 runner docker 1081417 Aug 22 09:01 gemini-native-product-image_2025-08-22_1.png
+-rw-r--r-- 1 runner docker    2569 Aug 22 09:00 generated_instagram_caption_2025-08-22.txt
+-rw-r--r-- 1 runner docker    3520 Aug 22 09:01 post_analysis_result_2025-08-22.json
+-rw-r--r-- 1 runner docker    2501 Aug 22 09:00 translated_caption_2025-08-22.txt
