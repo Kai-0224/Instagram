@@ -132,7 +132,7 @@ if generated_images:
             print(generated_image.text)
         elif generated_image.inline_data is not None:
             image = Image.open(BytesIO((generated_image.inline_data.data)))
-            image.save('image_filename')
+            image.save(image_filename)
         print(f"Successfully generated and saved image: {image_filename}")
 else:
     print("Image generation failed. No image files were saved.")
