@@ -114,6 +114,7 @@ def generate_images_with_analysis(analysis_result, en_content):
             config=types.GenerateContentConfig(
             response_modalities=['TEXT', 'IMAGE']
                 )
+        )
         
         return response.candidates[0].content.parts
     except Exception as e:
