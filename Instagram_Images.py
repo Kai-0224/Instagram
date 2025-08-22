@@ -128,10 +128,10 @@ generated_images = generate_images_with_analysis(analysis, en_content)
 if generated_images:
     for i, generated_image in enumerate(generated_images):
         if generated_image.text is not None:
-            print(part.text)
+            print(generated_image.text)
         elif generated_image.inline_data is not None:
             image_filename = f'imagen-product-image_{today}_{i}.jpg'
-            image = Image.open(BytesIO((part.inline_data.data)))
+            image = Image.open(BytesIO((generated_image.inline_data.data)))
             image.save('image_filename')
         print(f"Successfully generated and saved image: {image_filename}")
 else:
