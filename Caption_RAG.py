@@ -170,7 +170,18 @@ today = datetime.date.today()
 output_file = f"generated_instagram_caption_{today}.txt"
 
 # Generate and save content
-prompt = f"Context: {context}\n\nQuestion: {cc}\n\nAnswer:"
+prompt = f"""
+Context: {context}
+
+Task: Based on the context, write a concise Instagram caption for the following topic:
+{cc}
+
+Requirements:
+- Length: 50–80 words in English
+- Use clear and attractive language
+- Avoid long explanations
+- End with 2–3 relevant hashtags
+"""
 
 response = client.models.generate_content(
     model="gemini-2.5-flash",
