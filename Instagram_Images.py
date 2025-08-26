@@ -79,7 +79,7 @@ def generate_images_with_analysis(analysis_result, en_content):
     
     if not key_insights:
         prompt = f"""
-        Create a professional Instagram product promotion image for Tanji Company.
+        Create a professional Instagram product promotion image template for Tanji Company. **The image must be free of any text or words.**
         
         Content: {en_content[:300]}
         
@@ -92,7 +92,7 @@ def generate_images_with_analysis(analysis_result, en_content):
         """
     else:
         prompt = f"""
-        Create a professional Instagram product promotion image based on the following analysis:
+        Create a professional Instagram product promotion image template for Tanji Company. **The image must be free of any text or words.** Please create based on the following analysis:
 
         Content summary: {en_content[:200]}...
         
