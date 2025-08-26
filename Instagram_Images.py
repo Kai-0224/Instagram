@@ -85,7 +85,7 @@ def generate_images_with_analysis(analysis_result, en_content):
         
         Requirements:
         - High-quality, Instagram-friendly visuals
-        - Space for text editing
+        - Space for text editing, and do not put text in it
         - Include limited-time offer label design
         - Match Tanji Company brand identity
         - 1080x1080 square format
@@ -101,7 +101,7 @@ def generate_images_with_analysis(analysis_result, en_content):
         
         Technical requirements:
         - High-quality, Instagram-friendly visuals
-        - Space for text editing
+        - Space for text editing, and do not put text in it
         - Include limited-time offer label design
         - Match Tanji Company brand identity
         - 1080x1080 square format
