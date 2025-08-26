@@ -39,8 +39,7 @@ def analyze_post_content(post_content):
         "Color and Style",
         "Details and Texture",
         "Atmosphere and Lighting",
-        "Call to Action",
-        "Emotion and Storytelling"
+        "Call to Action"
     ]
     
     analysis_result = {}
