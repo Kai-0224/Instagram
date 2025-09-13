@@ -1,0 +1,9 @@
+Generated files in generated_content/2025-09-13:
+total 1156
+drwxr-xr-x  2 runner runner    4096 Sep 13 06:17 .
+drwxr-xr-x 22 runner runner    4096 Sep 13 06:17 ..
+-rw-r--r--  1 runner runner      49 Sep 13 06:17 file_list.txt
+-rw-r--r--  1 runner runner 1158737 Sep 13 06:17 gemini-native-product-image_2025-09-13_0.png
+-rw-r--r--  1 runner runner     425 Sep 13 06:16 generated_instagram_caption_2025-09-13.txt
+-rw-r--r--  1 runner runner    2274 Sep 13 06:17 post_analysis_result_2025-09-13.json
+-rw-r--r--  1 runner runner     397 Sep 13 06:16 translated_caption_2025-09-13.txt
